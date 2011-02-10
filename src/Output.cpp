@@ -10,9 +10,19 @@
 #include <string>
 #include <fstream>
 #include <time.h>
+#include <sstream>
 #include <boost/foreach.hpp>
+#include <boost/filesystem.hpp>
 
 #define foreach BOOST_FOREACH
+
+template< class T> inline std::string to_string( const T & value)
+{
+	// auxiliary method which returns a string from an object of the class T
+	std::stringstream streamOut;
+	streamOut << value;
+	return streamOut.str( );
+}
 
 Output::Output() {
 	// TODO Auto-generated constructor stub
@@ -55,9 +65,15 @@ void Output::out(std::string text, int value)
 
 void Output::sdoWriteOutput(Parameters *p, std::vector<Node *> *population, std::vector<Tag *> *tags)
 {
-	time_t seconds;
-	time(&seconds);
-	std::ofstream outfile("/Users/martin/Documents/EclipseWorkspace/TagExchange/Debug/Graph-Output-2.gv");  //+ p->getNumNodes() + "-Nodes-" + p->getNumTags() + "-Tags-" + p->getCacheSize() + "-CacheSize-" +  ".gv");
+	boost::filesystem::path directory = p->getDirectory();
+	std::string filename = "Output--Iteration-" + to_string<int>(p->getCurrentIteration()) + ".gv";
+	boost::filesystem::path outputfile = directory / filename;
+	std::ofstream outfile(outputfile.string().c_str());
+	if(!outfile.is_open())
+	{
+		Output::out("file error");
+		exit(-1);
+	}
 	outfile << "digraph G {\ngraph [center rankdir=LR bgcolor=\"#999999\"]\nedge [dir=none]\nnode [width=0.6 height=0.6 label=\"\"]" << std::endl;
 	outfile.flush();
 	foreach(Node *n, *population)
@@ -71,6 +87,7 @@ void Output::sdoWriteOutput(Parameters *p, std::vector<Node *> *population, std:
 		if(n->isProducer())
 		{
 			outfile << n->produces()->getColour();
+			outfile.flush();
 		}
 		else
 		{

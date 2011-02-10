@@ -16,6 +16,7 @@
 #include "NetworkFactory.h"
 #include "Output.h"
 #include <boost/foreach.hpp>
+#include <boost/filesystem.hpp>
 
 #define foreach BOOST_FOREACH
 using namespace std;
@@ -33,6 +34,7 @@ void finalise();
 
 int main() {
 	initialise();
+	Output::out("Done initialisation");
 	for(int i = 0; i < 10; i++)
 	{
 		iterate();
@@ -45,7 +47,7 @@ int main() {
 void initialise()
 {
 	ReadInput ri;
-	p = ri.readInputFromFile("/Users/martin/Documents/EclipseWorkspace/TagExchange/Debug/INPUT");
+	p = ri.readInputFromFile();
 
 	for(int i = 0; i < p->getNumNodes(); i++)
 	{

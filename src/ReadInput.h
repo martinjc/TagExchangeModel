@@ -17,7 +17,7 @@ class ReadInput {
 public:
 	ReadInput();
 	virtual ~ReadInput();
-	Parameters* readInputFromFile(const char*);
+	Parameters* readInputFromFile();
 };
 
 #endif /* READINPUT_H_ */

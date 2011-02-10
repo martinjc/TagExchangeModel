@@ -9,6 +9,7 @@
 #define PARAMETERS_H_
 
 #include <boost/random/mersenne_twister.hpp>
+#include <boost/filesystem.hpp>
 
 class Parameters {
 public:
@@ -31,6 +32,7 @@ public:
 	int getSeed();
 	unsigned int getUtilityMemoryWindow();
 	int getCurrentIteration();
+	boost::filesystem::path getDirectory();
 	void setAcceptExchange(double acceptExchange);
 	void setAcceptFriend(double acceptFriend);
 	void setCacheSize(int cacheSize);
@@ -46,6 +48,7 @@ public:
 	void setSeed(int seed);
 	void setUtilityMemoryWindow(unsigned int utilityMemoryWindow);
 	void setCurrentIteration(int iteration);
+	void setDirectory(boost::filesystem::path directory);
 
 
 private:
@@ -71,6 +74,8 @@ private:
 	unsigned int utilityMemoryWindow;
 
 	int seed;
+
+	boost::filesystem::path working_directory;
 
 	boost::mt19937 rng;
 };

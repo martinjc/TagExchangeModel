@@ -32,6 +32,8 @@ Node::Node(Parameters *p)
 	this->notfriends = new std::vector<Node *>();
 
 	this->iterationData = new std::vector<IterationData *>();
+
+	this->setProducer(false);
 }
 
 

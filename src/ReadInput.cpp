@@ -30,6 +30,16 @@
 #include <sstream>
 #include <string>
 #include <map>
+#include <boost/filesystem.hpp>
+#include <time.h>
+
+template< class T> inline std::string to_string( const T & value)
+{
+	// auxiliary method which returns a string from an object of the class T
+	std::stringstream streamOut;
+	streamOut << value;
+	return streamOut.str( );
+}
 
 template <class T> bool from_string(T& t, const std::string& s, std::ios_base& (*f)(std::ios_base&))
 {
@@ -46,10 +56,13 @@ ReadInput::~ReadInput() {
 	// TODO Auto-generated destructor stub
 }
 
-Parameters* ReadInput::readInputFromFile(const char* filename)
+Parameters* ReadInput::readInputFromFile()
 {
+	boost::filesystem::path working_directory =  boost::filesystem::initial_path<boost::filesystem::path>();
 	Output::out("reading input file");
-	std::ifstream ifs(filename, std::ifstream::in);
+	std::cout << working_directory << std::endl;
+	boost::filesystem::path inputfile = boost::filesystem::initial_path<boost::filesystem::path>() / "INPUT";
+	std::ifstream ifs(inputfile.string().c_str(), std::ifstream::in);
 	if(!ifs.good())
 	{
 		Output::out("file error");
@@ -93,6 +106,7 @@ Parameters* ReadInput::readInputFromFile(const char* filename)
 	p->setNumTags((int)params->find("numtags")->second);
 	p->setUtilityMemoryWindow((unsigned int)params->find("utilitymemorywindow")->second);
 	p->setCurrentIteration(0);
+	p->setDirectory(working_directory);
 	ifs.close();
 	return p;
 }

@@ -154,3 +154,11 @@ void Parameters::setUtilityMemoryWindow(unsigned int utilityMemoryWindow) {
 	this->utilityMemoryWindow = utilityMemoryWindow;
 }
 
+void Parameters::setDirectory(boost::filesystem::path directory) {
+	this->working_directory = directory;
+}
+
+boost::filesystem::path Parameters::getDirectory() {
+	return this->working_directory;
+}
+
