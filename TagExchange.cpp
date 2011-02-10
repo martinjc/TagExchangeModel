@@ -33,33 +33,19 @@ void finalise();
 
 int main() {
 	initialise();
-	for(int i = 0; i < 100; i++)
+	for(int i = 0; i < 10; i++)
 	{
 		iterate();
 	}
 	finalise();
+	Output::out("DONE");
 
 }
 
 void initialise()
 {
 	ReadInput ri;
-	Output::out("testing reading input");
 	p = ri.readInputFromFile("/Users/martin/Documents/EclipseWorkspace/TagExchange/Debug/INPUT");
-	Output::out(p->getNumNodes());
-	Output::out(p->getCacheSize());
-	Output::out(p->getNumTags());
-	Output::out(p->getIterations());
-	Output::out(p->getAcceptExchange());
-	Output::out(p->getAcceptFriend());
-	Output::out(p->getNeighbourProb());
-	Output::out(p->getNonFriendExchange());
-	Output::out(p->getDirectUtil());
-	Output::out(p->getIndirectUtil());
-	Output::out(p->getDirectUtilContent());
-	Output::out(p->getIndirectUtilContent());
-	Output::out(p->getUtilityMemoryWindow());
-	Output::out(p->getSeed());
 
 	for(int i = 0; i < p->getNumNodes(); i++)
 	{
@@ -85,7 +71,7 @@ void initialise()
 		tags->push_back(t);
 	}
 
-	Output::out("Tags created");
+	Output::out("tags created");
 
 	// Randomly choose interests for population
 	foreach(Node *n, *population)
@@ -111,7 +97,6 @@ void iterate()
 	// For every node in the population
 	foreach(Node *i, *population)
 	{
-		Output::out("node", i->getID());
 		// Pick a node to try and exchange with
 		// Prioritise friends over non-friends according to value of nonFriendExchangeProbability
 		double chooseNonFriendProb = p->getNextRandomDouble(0,1);
@@ -141,7 +126,6 @@ void iterate()
 				}
 			}
 		}
-		Output::out("picked friend", j->getID());
 
 		double util = 0.0;
 		// node we pick gets to decide whether or not to reciprocate
@@ -163,7 +147,6 @@ void iterate()
 			j->receiveContent(i, i->getCache());
 			exchanged = true;
 		}
-		Output::out("exchanged");
 		// check links and update social network
 			// friend link, j didn't play, remove link. check caches
 			// friend link, j did play, calc utility, if dropped too low, remove link
@@ -173,7 +156,6 @@ void iterate()
 		{
 			if(!exchanged)
 			{
-				Output::out("removing friend", j->getID());
 				i->removeFriend(j);
 				j->removeFriend(i);
 			}
@@ -182,7 +164,6 @@ void iterate()
 				util = i->getAverageUtility(j);
 				if(util < p->getAcceptFriend())
 				{
-					Output::out("removing friend", j->getID());
 					i->removeFriend(j);
 					j->removeFriend(i);
 				}
@@ -195,7 +176,6 @@ void iterate()
 				util = i->getAverageUtility(j);
 				if(util > p->getAcceptFriend())
 				{
-					Output::out("adding friend", j->getID());
 					i->addFriend(j);
 					j->addFriend(i);
 				}
@@ -203,7 +183,6 @@ void iterate()
 		}
 		// If we are friends after all that, examine the received content and the content we
 		// currently have in the cache and decide what we want to keep
-		Output::out("adding content to cache");
 		if(i->isFriend(j))
 		{
 			i->addContentToCache(j->getCache());

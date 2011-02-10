@@ -230,8 +230,6 @@ void Node::addContentToCache(std::vector<Tag*> *receivedCache)
 		}
 	}
 	this->cache = newCache;
-
-
 }
 
 
@@ -364,21 +362,24 @@ void Node::cleanCache()
 	{
 		if(this->sourceOf != t)
 		{
-			std::vector<Node *> *providers = myProviders->find(t)->second;
-			bool neighbourHasTag = false;
-			foreach(Node *n, *friends)
+			if(myProviders->find(t) != myProviders->end())
 			{
-				if(n->providesTag(t, providers))
-				{
-					neighbourHasTag = true;
-				}
-			}
-			if(!neighbourHasTag)
-			{
-				toBeErased->push_back(t);
+				std::vector<Node *> *providers = myProviders->find(t)->second;
+				bool neighbourHasTag = false;
 				foreach(Node *n, *friends)
 				{
-					n->notifyTagRemoved(t, this);
+					if(n->providesTag(t, providers))
+					{
+						neighbourHasTag = true;
+					}
+				}
+				if(!neighbourHasTag)
+				{
+					toBeErased->push_back(t);
+					foreach(Node *n, *friends)
+					{
+						n->notifyTagRemoved(t, this);
+					}
 				}
 			}
 		}
@@ -404,11 +405,17 @@ void Node::notifyTagRemoved(Tag *t, Node *source)
 	{
 		if(find(cache->begin(), cache->end(), t) != cache->end())
 		{
-			std::vector<Node *> *myProvidersForT = myProviders->find(t)->second;
-			myProvidersForT->erase(find(myProvidersForT->begin(), myProvidersForT->end(), source));
-			if(myProvidersForT->size() == 0)
+			if(myProviders->find(t) != myProviders->end())
 			{
-				cache->erase(find(cache->begin(), cache->end(), t));
+				std::vector<Node *> *myProvidersForT = myProviders->find(t)->second;
+				if(find(myProvidersForT->begin(), myProvidersForT->end(), source) != myProvidersForT->end())
+				{
+					myProvidersForT->erase(find(myProvidersForT->begin(), myProvidersForT->end(), source));
+				}
+				if(myProvidersForT->size() <= 0)
+				{
+					cache->erase(find(cache->begin(), cache->end(), t));
+				}
 			}
 		}
 	}
@@ -418,14 +425,10 @@ void Node::notifyTagRemoved(Tag *t, Node *source)
 
 void Node::removeFriend(Node *n)
 {
-	Output::out("removing friend");
 	friends->erase(find(friends->begin(), friends->end(), n));
-	Output::out("friend removed");
 	notfriends->push_back(n);
 	foreach(Tag *t, *cache)
 	{
-		Output::out("checking tag");
-		Output::out(t->getId());
 		std::vector<Node *> *myProvidersForT = myProviders->find(t)->second;
 		std::vector<Node *>::iterator it = find(myProvidersForT->begin(), myProvidersForT->end(), n);
 		if(it != myProvidersForT->end())
@@ -472,7 +475,10 @@ bool Node::isFriend(Node *n)
 
 void Node::addFriend(Node *n)
 {
-	this->friends->push_back(n);
+	if(find(friends->begin(), friends->end(), n) == friends->end())
+	{
+		this->friends->push_back(n);
+	}
 }
 
 

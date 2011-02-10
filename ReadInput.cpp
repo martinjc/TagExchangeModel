@@ -30,15 +30,11 @@ ReadInput::~ReadInput() {
 
 Parameters* ReadInput::readInputFromFile(const char* filename)
 {
-	Output::out("reading file");
+	Output::out("reading input file");
 	std::ifstream ifs(filename, std::ifstream::in);
-	if(ifs.good())
+	if(!ifs.good())
 	{
-		Output::out("file open");
-	}
-	else
-	{
-		Output::out("file not open");
+		Output::out("file error");
 		exit(-1);
 	}
 	std::map<std::string, double> *params = new std::map<std::string, double>();
@@ -52,12 +48,10 @@ Parameters* ReadInput::readInputFromFile(const char* filename)
  		if(separator != std::string::npos)
  		{
  			std::string param = str.substr(0,separator);
- 			Output::out(param);
  			std::string value = str.substr(separator+2);
  			double v;
 			if(from_string<double>(v, value, std::dec))
 			{
-				Output::out(v);
 			}
 			else
 			{

@@ -70,7 +70,7 @@ void Output::sdoWriteOutput(Parameters *p, std::vector<Node *> *population, std:
 		outfile.flush();
 		if(n->isProducer())
 		{
-			outfile << n->produceTag()->getColour();
+			outfile << n->produces()->getColour();
 		}
 		else
 		{
@@ -105,6 +105,7 @@ void Output::sdoWriteOutput(Parameters *p, std::vector<Node *> *population, std:
 	outfile << "{ edge [color=\"#ffffff\"]";
 	outfile.flush();
 	nodesDone = new std::vector<Node *>();
+	nodesDone->clear();
 	foreach(Node *n, *population)
 	{
 		std::vector<Node *> *friends = n->getFriends();
@@ -120,9 +121,11 @@ void Output::sdoWriteOutput(Parameters *p, std::vector<Node *> *population, std:
 	}
 	outfile << "}" << std::endl;
 	outfile.flush();
+
 	foreach(Tag *t, *tags)
 	{
 		nodesDone = new std::vector<Node *>();
+		nodesDone->clear();
 		outfile << "{ edge [color=\"#";
 		outfile.flush();
 		outfile << t->getColour();
